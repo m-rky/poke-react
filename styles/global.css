@@ -1,0 +1,8 @@
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+#__next > :nth-child(2) {
+  margin: auto;
+}
