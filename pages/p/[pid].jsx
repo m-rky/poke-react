@@ -42,7 +42,7 @@ const fetcher = async (url) => {
   return res.json();
 };
 
-const PokePage = (props) => {
+function PokePage(props) {
   const [weight, setWeight] = useState(true);
   const [height, setHeight] = useState(true);
   const [tab, setTab] = useState('Stats');
@@ -55,8 +55,12 @@ const PokePage = (props) => {
       initialData: props.pokemon,
     }
   );
-  if (isValidating) return <div>Loading...</div>;
-  if (error) return <Error title={error.message || 'Page not found'} statusCode={404} />;
+  if (isValidating) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <Error title={error.message || 'Page not found'} statusCode={404} />;
+  }
   if (data !== undefined) {
     return (
       <Base>
@@ -68,32 +72,39 @@ const PokePage = (props) => {
         <Content>
           <PokeImage>
             <SVG
-              viewBox='0 0 500 500'
-              xmlns='http://www.w3.org/2000/svg'
-              xmlnsXlink='http://www.w3.org/1999/xlink'
-              id='blobSvg'
+              viewBox="0 0 500 500"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              id="blobSvg"
             >
               <path
-                fill='url(#gradient-fill)'
-                id='blob'
-                d='M390,297Q397,344,368,395Q339,446,278,462Q217,478,179,427Q141,376,92,343.5Q43,311,70,258Q97,205,128.5,176Q160,147,192.5,111.5Q225,76,282,66Q339,56,397.5,87Q456,118,419.5,184Q383,250,390,297Z'
+                fill="url(#gradient-fill)"
+                id="blob"
+                d="M390,297Q397,344,368,395Q339,446,278,462Q217,478,179,427Q141,376,92,343.5Q43,311,70,258Q97,205,128.5,176Q160,147,192.5,111.5Q225,76,282,66Q339,56,397.5,87Q456,118,419.5,184Q383,250,390,297Z"
               />
               <defs>
-                <linearGradient id='gradient-fill' gradientTransform='rotate(25)'>
-                  <stop offset='0.4' stopColor={TypeColor[data.types[0].type.name]} />
+                <linearGradient
+                  id="gradient-fill"
+                  gradientTransform="rotate(25)"
+                >
                   <stop
-                    offset='1'
+                    offset="0.4"
+                    stopColor={TypeColor[data.types[0].type.name]}
+                  />
+                  <stop
+                    offset="1"
                     stopColor={
-                      TypeColor[data.types[1]?.type.name] || TypeColor[data.types[0].type.name]
+                      TypeColor[data.types[1]?.type.name] ||
+                      TypeColor[data.types[0].type.name]
                     }
-                    stopOpacity='0.8'
+                    stopOpacity="0.8"
                   />
                 </linearGradient>
               </defs>
             </SVG>
             <StyledImage
               type={data.types[0].type.name}
-              layout='responsive'
+              layout="responsive"
               width={150}
               height={150}
               src={data.sprites.other['official-artwork'].front_default}
@@ -112,19 +123,19 @@ const PokePage = (props) => {
             <SelectorTabs>
               <Tab
                 tab={tab}
-                label='Overview'
+                label="Overview"
                 type={data.types[0].type.name}
                 altType={data.types[1]?.type.name}
-                onClick={(e) => setTab(e.target.innerText)}
+                onClick={(e) => setTab(e.target.textContent)}
               >
                 Overview
               </Tab>
               <Tab
                 tab={tab}
-                label='Stats'
+                label="Stats"
                 type={data.types[0].type.name}
                 altType={data.types[1]?.type.name}
-                onClick={(e) => setTab(e.target.innerText)}
+                onClick={(e) => setTab(e.target.textContent)}
               >
                 Stats
               </Tab>
@@ -146,9 +157,13 @@ const PokePage = (props) => {
                 <Attributes onClick={() => setWeight(!weight)}>
                   <SectionName>Weight:</SectionName>
                   {weight ? (
-                    <StatNumbers>{(data.weight / 4.536).toFixed(1)} lbs</StatNumbers>
+                    <StatNumbers>
+                      {(data.weight / 4.536).toFixed(1)} lbs
+                    </StatNumbers>
                   ) : (
-                    <StatNumbers>{(data.weight / 10).toFixed(0)} kg</StatNumbers>
+                    <StatNumbers>
+                      {(data.weight / 10).toFixed(0)} kg
+                    </StatNumbers>
                   )}
                 </Attributes>
                 <Attributes onClick={() => setHeight(!height)}>
@@ -192,9 +207,11 @@ const PokePage = (props) => {
                         <StatBar
                           value={(Number(base_stat) / 255) * 100}
                           type={data.types[0].type.name}
-                        ></StatBar>
+                        />
                       </BarBackground>
-                      <StatNumber type={data.types[0].type.name}>{base_stat}</StatNumber>
+                      <StatNumber type={data.types[0].type.name}>
+                        {base_stat}
+                      </StatNumber>
                     </StatValue>
                   </ul>
                 ))}
@@ -206,16 +223,18 @@ const PokePage = (props) => {
       </Base>
     );
   }
-};
+}
 
 export default PokePage;
 
 export async function getServerSideProps(context) {
   try {
-    const pokemon = await fetcher(`https://pokeapi.co/api/v2/pokemon/${context.query.pid}`);
+    const pokemon = await fetcher(
+      `https://pokeapi.co/api/v2/pokemon/${context.query.pid}`
+    );
     return { props: { pokemon } };
-  } catch (err) {
-    return { props: { error: JSON.stringify(err) } };
+  } catch (error) {
+    return { props: { error: JSON.stringify(error) } };
   }
 }
 
@@ -247,7 +266,8 @@ const Tab = styled.li`
     border-bottom: ${({ altType }) =>
       altType ? `2px solid ${TypeColor[altType]}` : `2px solid red`};
   }
-  border-bottom: ${({ tab, label, type }) => tab === label && `2px solid ${TypeColor[type]}`};
+  border-bottom: ${({ tab, label, type }) =>
+    tab === label && `2px solid ${TypeColor[type]}`};
 `;
 const Overview = tw.div`mt-8`;
 const Attributes = tw.ul`flex justify-between my-2 font-body`;
