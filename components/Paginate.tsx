@@ -1,19 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import tw from 'twin.macro';
 
-interface Props {
+type Props = {
   goToNextPage?: any;
   goToPrevPage?: any;
-}
-
-const Paginate = ({ goToNextPage, goToPrevPage }: Props): JSX.Element => {
-  return (
-    <PaginateContainer>
-      {goToPrevPage && <PaginateButton onClick={goToPrevPage}>Previous Page</PaginateButton>}
-      {goToNextPage && <PaginateButton onClick={goToNextPage}>Next Page</PaginateButton>}
-    </PaginateContainer>
-  );
 };
 
+function Paginate({ goToNextPage, goToPrevPage }: Props): JSX.Element {
+  return (
+    <PaginateContainer>
+      {goToPrevPage && (
+        <PaginateButton onClick={goToPrevPage}>Previous Page</PaginateButton>
+      )}
+      {goToNextPage && (
+        <PaginateButton onClick={goToNextPage}>Next Page</PaginateButton>
+      )}
+    </PaginateContainer>
+  );
+}
+
+// eslint-disable-next-line import/no-default-export
 export default Paginate;
 
 /*

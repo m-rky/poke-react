@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 
 import config from '../config';
-import { Button } from './core/Button';
 
 type Props = {
   count?: number;
@@ -16,9 +16,11 @@ type DataProps = {
   url: string;
 };
 
+// eslint-disable-next-line import/no-default-export
 export default function Search(data: Props): JSX.Element {
   const [search, setSearch] = useState<string>('');
   const [pokemon, setPokemon] = useState<DataProps[]>([]);
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const [filteredPokemon, setFilteredPokemon] = useState({} as DataProps);
   const [loading, setLoading] = useState<boolean>(true);
   const [filtered, setFiltered] = useState<boolean>(false);
@@ -43,11 +45,13 @@ export default function Search(data: Props): JSX.Element {
     // maybe change the return into an arr
     return arr[indexQuery];
   };
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const filterName = (arr: { name: string; url: string }[], query: string) => {
     // mewtwo comes before mew...
     // bugfix after lol
     return arr.find(
       (poke) =>
+        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
         poke.name.slice(0, Math.max(0, query.length)) === query.toLowerCase()
     );
   };
@@ -58,7 +62,8 @@ export default function Search(data: Props): JSX.Element {
   };
 
   useEffect(() => {
-    const numReg = new RegExp(`^[0-9]*$`);
+    // eslint-disable-next-line prefer-regex-literals
+    const numReg = new RegExp(`^[0-9]*$/`, 'u');
     // filternumber demands only one object
     // filtername can provide multiple... why am i even separating the two like this
     if (
@@ -68,6 +73,7 @@ export default function Search(data: Props): JSX.Element {
     ) {
       setFilteredPokemon(filterNumber(pokemon, search));
       setFiltered(true);
+      // eslint-disable-next-line sonarjs/elseif-without-else
     } else if (!numReg.test(search)) {
       setFilteredPokemon(filterName(pokemon, search));
       setFiltered(true);
@@ -98,7 +104,7 @@ export default function Search(data: Props): JSX.Element {
       {valid && filtered && filteredPokemon ? (
         <PokemonSuggestion
           name={filteredPokemon.name}
-          url={filteredPokemon.url.replace(/\/$/, '').split('/').pop()}
+          url={filteredPokemon.url.replace(/\/$/u, '').split('/').pop()}
         />
       ) : null}
 

@@ -16,20 +16,25 @@ const loadingContainerVariants = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function PokeGrid({ pokemon }): JSX.Element {
   return (
-    <>
-      <PokeGridSection>
-        <MotionDiv className='' variants={loadingContainerVariants} initial='start' animate='end'>
-          {pokemon.map((pokemon) => {
-            return <Card key={pokemon.name} pokemon={pokemon} />;
-          })}
-        </MotionDiv>
-      </PokeGridSection>
-    </>
+    <PokeGridSection>
+      <MotionDiv
+        className=""
+        variants={loadingContainerVariants}
+        initial="start"
+        animate="end"
+      >
+        {pokemon.map((pokemon) => {
+          return <Card key={pokemon.name} pokemon={pokemon} />;
+        })}
+      </MotionDiv>
+    </PokeGridSection>
   );
 }
 
+// eslint-disable-next-line import/no-default-export
 export default PokeGrid;
 
 /*

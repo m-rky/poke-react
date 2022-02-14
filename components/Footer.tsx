@@ -1,12 +1,12 @@
 import tw from 'twin.macro';
 
-export const Footer = (): JSX.Element => {
+export function Footer(): JSX.Element {
   return (
     <FooterSection>
       <FooterText>Made with Watmel Berries.</FooterText>
     </FooterSection>
   );
-};
+}
 
 /*
  * Styled section

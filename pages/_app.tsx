@@ -1,7 +1,7 @@
 // import App from "next/app";
 import '../styles/global.css';
 
-import type { AppProps /*, AppContext */ } from 'next/app';
+import type { AppProps } from 'next/app';
 import { GlobalStyles } from 'twin.macro';
 
 import Layout from '../components/Layout';

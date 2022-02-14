@@ -1,17 +1,18 @@
 import tw from 'twin.macro';
 
-interface Props {
+type Props = {
   text: string;
-}
+};
 
-const Loading = ({ text }: Props): JSX.Element => {
+function Loading({ text }: Props): JSX.Element {
   return (
     <LoadingSection>
       <LoadingText>{text}</LoadingText>
     </LoadingSection>
   );
-};
+}
 
+// eslint-disable-next-line import/no-default-export
 export default Loading;
 
 /*

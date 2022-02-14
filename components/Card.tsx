@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import { motion } from 'framer-motion';
 import tw from 'twin.macro';
 
@@ -10,29 +11,30 @@ const loadingCardVariant = {
   },
 };
 
-interface AbilityProps {
+type AbilityProps = {
   ability: { name: string; url: string };
   is_hidden: boolean;
   solid: number;
-}
+};
 
-interface StatProps {
+type StatProps = {
   base_stat: number;
   effort: number;
   stat: { name: string; url: string };
-}
+};
 
-interface HeldItemProps {
+type HeldItemProps = {
   item: { name: string; url: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   version_details?: any;
-}
+};
 
-interface TypeProps {
+type TypeProps = {
   slot?: number;
   type?: { name: string; url: string };
-}
+};
 
-interface Pokemon {
+type Pokemon = {
   abilities?: AbilityProps[];
   base_experience?: number;
   height?: number;
@@ -44,12 +46,13 @@ interface Pokemon {
   types?: TypeProps[];
   weight?: number;
   held_items?: HeldItemProps[];
-}
+};
 
-interface PokemonProps {
+type PokemonProps = {
   pokemon: Pokemon;
+  // eslint-disable-next-line react/no-unused-prop-types
   key: string;
-}
+};
 
 function Card({ pokemon }: PokemonProps): JSX.Element {
   return (
@@ -64,7 +67,11 @@ function Card({ pokemon }: PokemonProps): JSX.Element {
         <PokemonAbilities>
           <ul>
             {pokemon.abilities.map((ability, i) => {
-              return <li key={`${i}__${ability.ability.name}`}>{ability.ability.name}</li>;
+              return (
+                <li key={`${i}__${ability.ability.name}`}>
+                  {ability.ability.name}
+                </li>
+              );
             })}
           </ul>
 
@@ -88,7 +95,7 @@ function Card({ pokemon }: PokemonProps): JSX.Element {
                 <PokemonStatsBarBackground>
                   <PokemonStatsBarForeground
                     style={{ width: `${(stats.base_stat / 255) * 100}%` }}
-                  ></PokemonStatsBarForeground>
+                  />
                 </PokemonStatsBarBackground>
               </div>
             );
@@ -108,6 +115,7 @@ function Card({ pokemon }: PokemonProps): JSX.Element {
   );
 }
 
+// eslint-disable-next-line import/no-default-export
 export default Card;
 
 /*

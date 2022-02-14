@@ -10,7 +10,9 @@ import Document, {
 import * as React from 'react';
 
 export default class AppDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
+  static async getInitialProps(
+    ctx: DocumentContext
+  ): Promise<DocumentInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
     const styles = extractCritical(initialProps.html);
 
