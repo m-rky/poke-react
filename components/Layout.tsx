@@ -2,13 +2,13 @@
 /* eslint-disable react/function-component-definition */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import type { FunctionComponent } from 'react';
 
 import config from '../config';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
-const Layout: FunctionComponent = ({ children }) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const Layout = ({ children }): JSX.Element => {
   const router = useRouter();
 
   return (
