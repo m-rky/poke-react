@@ -49,11 +49,13 @@ export default function Search(data: Props): JSX.Element {
   const filterName = (arr: { name: string; url: string }[], query: string) => {
     // mewtwo comes before mew...
     // bugfix after lol
-    return arr.find(
-      (poke) =>
-        // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
-        poke.name.slice(0, Math.max(0, query.length)) === query.toLowerCase()
-    );
+    if (arr) {
+      return arr.find(
+        (poke) =>
+          // eslint-disable-next-line @typescript-eslint/prefer-string-starts-ends-with
+          poke.name.slice(0, Math.max(0, query.length)) === query.toLowerCase()
+      );
+    }
   };
 
   const submitSearch = (e) => {
@@ -101,7 +103,7 @@ export default function Search(data: Props): JSX.Element {
           name
         </div>
       )}
-      {valid && filtered && filteredPokemon ? (
+      {search.length >= 2 && valid && filtered && filteredPokemon ? (
         <PokemonSuggestion
           name={filteredPokemon.name}
           url={filteredPokemon.url.replace(/\/$/u, '').split('/').pop()}
@@ -119,7 +121,6 @@ export default function Search(data: Props): JSX.Element {
             }}
             placeholder="Search"
           />
-          {/* <Button value='Submit' type='submit' name='Search' variant='primary' /> */}
         </SearchField>
       )}
     </SearchContainer>

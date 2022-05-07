@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-member-accessibility */
 import { extractCritical } from '@emotion/server';
-import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 export default class AppDocument extends Document {
-  static async getInitialProps(
-    ctx: DocumentContext
-  ): Promise<DocumentInitialProps> {
+  static async getInitialProps(ctx) {
     const initialProps = await Document.getInitialProps(ctx);
     const styles = extractCritical(initialProps.html);
 
@@ -25,7 +21,7 @@ export default class AppDocument extends Document {
     };
   }
 
-  render(): JSX.Element {
+  render() {
     return (
       <Html>
         <Head />
