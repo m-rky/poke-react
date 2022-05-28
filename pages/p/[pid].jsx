@@ -52,8 +52,8 @@ function PokePage(props) {
           <h2 className="text-xl font-lighttext-gray-400">#{data.id}</h2>
         </div>
 
-        <section className="sm:(grid grid-cols-2 grid-rows-3)">
-          <div className="relative w-full lg:w-3/4 sm:(justify-self-center row-span-2)">
+        <section className="sm:grid sm:grid-cols-2 sm:grid-rows-3)">
+          <div className="relative w-full lg:w-3/4 sm:justify-self-center sm:row-span-2">
             <svg
               viewBox="0 0 500 500"
               xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +64,7 @@ function PokePage(props) {
                 position: 'absolute',
                 width: '100%',
                 height: '100%',
-                top: '0',
+                top: '-10%',
                 left: '0',
               }}
             >
@@ -85,7 +85,7 @@ function PokePage(props) {
                   <stop
                     offset="1"
                     stopColor={
-                      TypeColor[data.types[1]?.type.name] ||
+                      TypeColor[data.types[1].type.name] ||
                       TypeColor[data.types[0].type.name]
                     }
                     stopOpacity="0.8"
