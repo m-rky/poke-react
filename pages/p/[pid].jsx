@@ -109,6 +109,10 @@ function PokePage(props) {
                 className="px-3 py-1 font-semibold capitalize rounded-full font-body"
                 key={type.name}
                 type={type.name}
+                style={{
+                  color: TypeColor[type.name],
+                  border: `2px solid ${TypeColor[type.name]}`,
+                }}
               >
                 {type.name}
               </li>
@@ -123,8 +127,18 @@ function PokePage(props) {
                 label="Overview"
                 type="button"
                 format={data.types[0].type.name}
-                alttype={data.types[1].type.name}
+                alttype={data.types[1] ? data.types[1].type.name : null}
                 onClick={(e) => setTab(e.target.textContent)}
+                style={{
+                  color:
+                    tab === 'Overview'
+                      ? TypeColor[data.types[0].type.name]
+                      : 'initial',
+                  borderBottomColor:
+                    tab === 'Overview'
+                      ? TypeColor[data.types[0].type.name]
+                      : 'initial',
+                }}
               >
                 Overview
               </button>
@@ -134,8 +148,18 @@ function PokePage(props) {
                 label="Stats"
                 type="button"
                 format={data.types[0].type.name}
-                alttype={data.types[1].type.name}
+                alttype={data.types[1] ? data.types[1].type.name : null}
                 onClick={(e) => setTab(e.target.textContent)}
+                style={{
+                  color:
+                    tab === 'Stats'
+                      ? TypeColor[data.types[0].type.name]
+                      : 'initial',
+                  borderBottomColor:
+                    tab === 'Stats'
+                      ? TypeColor[data.types[0].type.name]
+                      : 'initial',
+                }}
               >
                 Stats
               </button>
@@ -145,7 +169,7 @@ function PokePage(props) {
               <div className="mt-8">
                 <button
                   type="button"
-                  className="flex justify-between my-2 font-body"
+                  className="flex justify-between my-2 font-body w-full"
                   onClick={() => setWeight(!weight)}
                 >
                   <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
@@ -162,7 +186,7 @@ function PokePage(props) {
                   )}
                 </button>
                 <button
-                  className="flex justify-between my-2 font-body"
+                  className="flex justify-between my-2 font-body w-full"
                   type="button"
                   onClick={() => setHeight(!height)}
                 >
@@ -189,7 +213,7 @@ function PokePage(props) {
                 </ul>
                 <div className="flex justify-between">
                   <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
-                    Abilities:{' '}
+                    Abilities:
                   </p>
                   <div>
                     {data.abilities.map(({ ability }) => (
@@ -219,11 +243,18 @@ function PokePage(props) {
                       <div
                         className="w-full h-4 rounded-full"
                         type={data.types[0].type.name}
+                        style={{
+                          backgroundColor:
+                            TypeColor[data.types[0].type.name] + 40,
+                        }}
                       >
                         <div
                           className="h-4 rounded-full"
-                          value={(Number(base_stat) / 255) * 100}
                           type={data.types[0].type.name}
+                          style={{
+                            width: `${(Number(base_stat) / 255) * 100}%`,
+                            backgroundColor: TypeColor[data.types[0].type.name],
+                          }}
                         />
                       </div>
                       <span
@@ -237,7 +268,6 @@ function PokePage(props) {
                 ))}
               </div>
             )}
-            {tab === 'Locations' && <div>More tbqh </div>}
           </div>
         </section>
       </div>
@@ -258,30 +288,3 @@ export async function getServerSideProps(context) {
     return { props: { error: JSON.stringify(error) } };
   }
 }
-
-// &:hover {
-//   border-bottom: ${({ altType }) =>
-//     altType ? `2px solid ${TypeColor[altType]}` : `2px solid red`};
-// }
-// border-bottom: ${({ tab, label, type }) =>
-//   tab === label && `2px solid ${TypeColor[type]}`};
-
-// const Type = styled.li`
-//   ${tw``}
-//   color: ${({ type }) => TypeColor[type]};
-//   border: 2px solid ${({ type }) => TypeColor[type]};
-// `;
-
-// const StatBar = styled.div`
-//   ${tw``}
-//   width: ${({ value }) => Number(value)}%;
-//   background-color: ${({ type }) => TypeColor[type]};
-// `;
-// const BarBackground = styled.div`
-//   ${tw``}
-//   background-color: ${({ type }) => TypeColor[type]}40;
-// `;
-// const StatNumber = styled.span`
-//   ${tw``}
-//   color: ${({ type }) => TypeColor[type]};
-// `;

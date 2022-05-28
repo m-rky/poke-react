@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import config from '../config';
 
 export default function Search(data) {
-  const [search, setSearch] = useState < string > '';
+  const [search, setSearch] = useState('');
   const [pokemon, setPokemon] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState({});
-  const [loading, setLoading] = useState < boolean > true;
-  const [filtered, setFiltered] = useState < boolean > false;
-  const [valid, setValid] = useState < boolean > true;
+  const [loading, setLoading] = useState(true);
+  const [filtered, setFiltered] = useState(false);
+  const [valid, setValid] = useState(true);
 
   useEffect(() => {
     setSearch('');
@@ -98,7 +98,7 @@ export default function Search(data) {
           onSubmit={submitSearch}
         >
           <input
-            className="my-2 py-4 bg-purple-100  sm:flex-1 dark:bg-gray-800 placeholder-purple-500 placeholder-opacity-70 focus:(outline-none ring ring-purple-300 border-purple-300) active:(outline-none  border-purple-300)"
+            className="my-2 px-2 py-4 bg-purple-100 rounded sm:flex-1 dark:bg-gray-800 placeholder-purple-500 placeholder-opacity-70 focus:outline-none focus:ring focus:ring-purple-300 focus:border-purple-300 active:outline-none  active:border-purple-300"
             type="text"
             name="search"
             value={search}
@@ -112,12 +112,3 @@ export default function Search(data) {
     </div>
   );
 }
-
-// const SearchSuggestionName = styled.a<StyledSuggestionProp>`
-//   :first-of-type {
-//     flex: 1 1 0%;
-//   }
-//   ${tw``}
-//   ${({ variant }) =>
-//     variant === 'warning' && tw`not-italic font-normal text-red-500`}
-// `;
