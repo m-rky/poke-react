@@ -1,9 +1,7 @@
-import Error from 'next/error';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import useSWR from 'swr';
-import tw, { styled } from 'twin.macro';
+import { useEffect, useState } from 'react';
+import Fetcher from '../../utils/fetch';
 
 const TypeColor = {
   normal: '#A7A87A',
@@ -27,55 +25,48 @@ const TypeColor = {
   '???': '#6CA091',
 };
 
-const fetcher = async (url) => {
-  const res = await fetch(url);
-
-  // If the status code is not in the range 200-299,
-  // we still try to parse and throw it.
-  if (!res.ok) {
-    const error = new Error('An error occurred while fetching the data.');
-    // Attach extra info to the error object.
-    error.info = await res.json();
-    error.status = res.status;
-    throw error;
-  }
-  return res.json();
-};
-
 function PokePage(props) {
   const [weight, setWeight] = useState(true);
   const [height, setHeight] = useState(true);
   const [tab, setTab] = useState('Stats');
+  const [data, setData] = useState();
   const router = useRouter();
   const { pid } = router.query;
-  const { data, error, isValidating } = useSWR(
-    `https://pokeapi.co/api/v2/pokemon/${pid}`,
-    fetcher,
-    {
-      initialData: props.pokemon,
-    }
-  );
-  if (isValidating) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <Error title={error.message || 'Page not found'} statusCode={404} />;
-  }
+
+  useEffect(() => {
+    const getPokemonInfo = async () => {
+      const res = await Fetcher(`https://pokeapi.co/api/v2/pokemon/${pid}`);
+      setData(res);
+    };
+
+    getPokemonInfo();
+  }, [pid]);
+
   if (data !== undefined) {
     return (
-      <Base>
-        <PokeHeader>
-          <PokeName>{data.species.name || data.name}</PokeName>
-          <PokeNumber>#{data.id}</PokeNumber>
-        </PokeHeader>
+      <div className="container p-4 mx-auto">
+        <div className="flex justify-between items-end capitalize mb-4">
+          <h1 className="text-3xl font-extrabold">
+            {data.species.name || data.name}
+          </h1>
+          <h2 className="text-xl font-lighttext-gray-400">#{data.id}</h2>
+        </div>
 
-        <Content>
-          <PokeImage>
-            <SVG
+        <section className="sm:(grid grid-cols-2 grid-rows-3)">
+          <div className="relative w-full lg:w-3/4 sm:(justify-self-center row-span-2)">
+            <svg
               viewBox="0 0 500 500"
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
               id="blobSvg"
+              style={{
+                zIndex: '-1',
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                top: '0',
+                left: '0',
+              }}
             >
               <path
                 fill="url(#gradient-fill)"
@@ -101,126 +92,155 @@ function PokePage(props) {
                   />
                 </linearGradient>
               </defs>
-            </SVG>
-            <StyledImage
+            </svg>
+            <Image
               type={data.types[0].type.name}
               layout="responsive"
               width={150}
               height={150}
               src={data.sprites.other['official-artwork'].front_default}
+              style={{ filter: `drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.3))` }}
             />
-          </PokeImage>
+          </div>
 
-          <TypeList>
+          <ul className="flex space-x-2 mt-8 justify-center sm:(items-center row-start-3)">
             {data.types.map(({ type }) => (
-              <Type key={type.name} type={type.name}>
+              <li
+                className="px-3 py-1 font-semibold capitalize rounded-full font-body"
+                key={type.name}
+                type={type.name}
+              >
                 {type.name}
-              </Type>
+              </li>
             ))}
-          </TypeList>
+          </ul>
 
-          <Information>
-            <SelectorTabs>
-              <Tab
+          <div className="sm:(row-span-3)">
+            <ul className="flex text-xs justify-evenly">
+              <button
+                className="px-1 py-2 mt-4 text-sm font-bold border-b-2"
                 tab={tab}
                 label="Overview"
-                type={data.types[0].type.name}
-                altType={data.types[1]?.type.name}
+                type="button"
+                format={data.types[0].type.name}
+                alttype={data.types[1].type.name}
                 onClick={(e) => setTab(e.target.textContent)}
               >
                 Overview
-              </Tab>
-              <Tab
+              </button>
+              <button
+                className="px-1 py-2 mt-4 text-sm font-bold border-b-2"
                 tab={tab}
                 label="Stats"
-                type={data.types[0].type.name}
-                altType={data.types[1]?.type.name}
+                type="button"
+                format={data.types[0].type.name}
+                alttype={data.types[1].type.name}
                 onClick={(e) => setTab(e.target.textContent)}
               >
                 Stats
-              </Tab>
-              {/* <Tab
-            tab={tab}
-            label='More'
-            type={data.types[0].type.name}
-            altType={data.types[1]?.type.name}
-            onClick={(e) => {
-              setTab(e.target.innerText);
-            }}
-          >
-            More
-          </Tab> */}
-            </SelectorTabs>
+              </button>
+            </ul>
 
             {tab === 'Overview' && (
-              <Overview>
-                <Attributes onClick={() => setWeight(!weight)}>
-                  <SectionName>Weight:</SectionName>
+              <div className="mt-8">
+                <button
+                  type="button"
+                  className="flex justify-between my-2 font-body"
+                  onClick={() => setWeight(!weight)}
+                >
+                  <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
+                    Weight:
+                  </p>
                   {weight ? (
-                    <StatNumbers>
+                    <span className="text-xs sm:text-sm md:text-lg">
                       {(data.weight / 4.536).toFixed(1)} lbs
-                    </StatNumbers>
+                    </span>
                   ) : (
-                    <StatNumbers>
+                    <span className="text-xs sm:text-sm md:text-lg">
                       {(data.weight / 10).toFixed(0)} kg
-                    </StatNumbers>
+                    </span>
                   )}
-                </Attributes>
-                <Attributes onClick={() => setHeight(!height)}>
-                  <SectionName>Height:</SectionName>
+                </button>
+                <button
+                  className="flex justify-between my-2 font-body"
+                  type="button"
+                  onClick={() => setHeight(!height)}
+                >
+                  <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
+                    Height:
+                  </p>
                   {height ? (
-                    <StatNumbers>{`${Math.trunc(data.height / 3.048)}'${
-                      Math.round(data.height * 3.937) % 12
-                    }"`}</StatNumbers>
+                    <span className="text-xs sm:text-sm md:text-lg">{`${Math.trunc(
+                      data.height / 3.048
+                    )}'${Math.round(data.height * 3.937) % 12}"`}</span>
                   ) : (
-                    <StatNumbers>{`${data.height / 10}m`}</StatNumbers>
+                    <span className="text-xs sm:text-sm md:text-lg">{`${
+                      data.height / 10
+                    }m`}</span>
                   )}
-                </Attributes>
-                <Attributes>
-                  <SectionName>Base Exp:</SectionName>
-                  <StatNumbers> {data.base_experience} xp</StatNumbers>
-                </Attributes>
-                <Abilities>
-                  <SectionName>Abilities: </SectionName>
+                </button>
+                <ul className="flex justify-between my-2 font-body">
+                  <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
+                    Base Exp:
+                  </p>
+                  <li className="text-xs sm:text-sm md:text-lg">
+                    {data.base_experience} xp
+                  </li>
+                </ul>
+                <div className="flex justify-between">
+                  <p className="capitalize italic text-sm md:text-lg sm:font-semibold">
+                    Abilities:{' '}
+                  </p>
                   <div>
                     {data.abilities.map(({ ability }) => (
-                      <Ability key={ability.name} is_hidden={ability.is_hidden}>
+                      <p
+                        className="capitalize text-right text-xs sm:text-sm md:text-lg"
+                        key={ability.name}
+                        is_hidden={ability.is_hidden}
+                      >
                         {ability.name}
-                      </Ability>
+                      </p>
                     ))}
                   </div>
-                </Abilities>
-              </Overview>
+                </div>
+              </div>
             )}
 
             {tab === 'Stats' && (
-              <StatBlock>
+              <div className="mt-8 space-y-2">
                 {data.stats.map(({ stat, base_stat }) => (
                   <ul
                     key={stat.name}
                     title={`${stat.name.toUpperCase()} has a value of ${base_stat} out of 255 max`}
                     aria-label={`${stat.name.toUpperCase()} has a value of ${base_stat} out of 255 max`}
                   >
-                    <StatName>{stat.name}</StatName>
-                    <StatValue>
-                      <BarBackground type={data.types[0].type.name}>
-                        <StatBar
+                    <li className="uppercase italic md:text-lg">{stat.name}</li>
+                    <div className="flex justify-between items-center">
+                      <div
+                        className="w-full h-4 rounded-full"
+                        type={data.types[0].type.name}
+                      >
+                        <div
+                          className="h-4 rounded-full"
                           value={(Number(base_stat) / 255) * 100}
                           type={data.types[0].type.name}
                         />
-                      </BarBackground>
-                      <StatNumber type={data.types[0].type.name}>
+                      </div>
+                      <span
+                        className="ml-2 font-bold"
+                        type={data.types[0].type.name}
+                      >
                         {base_stat}
-                      </StatNumber>
-                    </StatValue>
+                      </span>
+                    </div>
                   </ul>
                 ))}
-              </StatBlock>
+              </div>
             )}
             {tab === 'Locations' && <div>More tbqh </div>}
-          </Information>
-        </Content>
-      </Base>
+          </div>
+        </section>
+      </div>
     );
   }
 }
@@ -229,72 +249,39 @@ export default PokePage;
 
 export async function getServerSideProps(context) {
   try {
-    const pokemon = await fetcher(
+    const pokemon = await Fetcher(
       `https://pokeapi.co/api/v2/pokemon/${context.query.pid}`
     );
+
     return { props: { pokemon } };
   } catch (error) {
     return { props: { error: JSON.stringify(error) } };
   }
 }
 
-/*
- * Styled section
- */
-const Base = tw.div`container p-4 mx-auto`;
-const Content = tw.section`sm:(grid grid-cols-2 grid-rows-3)
-`;
-const Information = tw.div`sm:(row-span-3)`;
-const StyledImage = styled(Image)`
-  filter: drop-shadow(3px 3px 4px rgba(0, 0, 0, 0.3));
-`;
-const PokeHeader = tw.div`flex justify-between items-end capitalize mb-4`;
-const PokeName = tw.h1`text-3xl font-extrabold font-title`;
-const PokeNumber = tw.h2`text-xl font-light font-title text-gray-400`;
-const SVG = styled.svg`
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-`;
-const SelectorTabs = tw.ul`flex text-xs justify-evenly`;
-const Tab = styled.li`
-  ${tw`px-1 py-2 mt-4 text-sm font-bold border-b-2`}
-  &:hover {
-    border-bottom: ${({ altType }) =>
-      altType ? `2px solid ${TypeColor[altType]}` : `2px solid red`};
-  }
-  border-bottom: ${({ tab, label, type }) =>
-    tab === label && `2px solid ${TypeColor[type]}`};
-`;
-const Overview = tw.div`mt-8`;
-const Attributes = tw.ul`flex justify-between my-2 font-body`;
-const TypeList = tw.ul`flex space-x-2 mt-8 justify-center sm:(items-center row-start-3)`;
-const Type = styled.li`
-  ${tw`px-3 py-1 font-semibold capitalize rounded-full font-body`}
-  color: ${({ type }) => TypeColor[type]};
-  border: 2px solid ${({ type }) => TypeColor[type]};
-`;
-const Abilities = tw.div`flex justify-between`;
-const StatNumbers = tw.li`text-xs sm:text-sm md:text-lg`;
-const Ability = tw.p`capitalize text-right text-xs sm:text-sm md:text-lg`;
-const SectionName = tw.p`capitalize italic text-sm md:text-lg sm:font-semibold`;
-const PokeImage = tw.div`relative w-full lg:w-3/4 sm:(justify-self-center row-span-2)`;
-const StatBlock = tw.div`mt-8 space-y-2`;
-const StatName = tw.li`uppercase italic md:text-lg`;
-const StatBar = styled.div`
-  ${tw`h-4 rounded-full`}
-  width: ${({ value }) => Number(value)}%;
-  background-color: ${({ type }) => TypeColor[type]};
-`;
-const BarBackground = styled.div`
-  ${tw`w-full h-4 rounded-full`}
-  background-color: ${({ type }) => TypeColor[type]}40;
-`;
-const StatValue = tw.div`flex justify-between items-center`;
-const StatNumber = styled.span`
-  ${tw`ml-2 font-bold`}
-  color: ${({ type }) => TypeColor[type]};
-`;
+// &:hover {
+//   border-bottom: ${({ altType }) =>
+//     altType ? `2px solid ${TypeColor[altType]}` : `2px solid red`};
+// }
+// border-bottom: ${({ tab, label, type }) =>
+//   tab === label && `2px solid ${TypeColor[type]}`};
+
+// const Type = styled.li`
+//   ${tw``}
+//   color: ${({ type }) => TypeColor[type]};
+//   border: 2px solid ${({ type }) => TypeColor[type]};
+// `;
+
+// const StatBar = styled.div`
+//   ${tw``}
+//   width: ${({ value }) => Number(value)}%;
+//   background-color: ${({ type }) => TypeColor[type]};
+// `;
+// const BarBackground = styled.div`
+//   ${tw``}
+//   background-color: ${({ type }) => TypeColor[type]}40;
+// `;
+// const StatNumber = styled.span`
+//   ${tw``}
+//   color: ${({ type }) => TypeColor[type]};
+// `;

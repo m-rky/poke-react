@@ -1,5 +1,3 @@
-/* eslint-disable @next/next/no-page-custom-font */
-/* eslint-disable react/function-component-definition */
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -7,8 +5,7 @@ import config from '../config';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const Layout = ({ children }): JSX.Element => {
+const Layout = ({ children }) => {
   const router = useRouter();
 
   return (
@@ -40,5 +37,4 @@ const Layout = ({ children }): JSX.Element => {
   );
 };
 
-// eslint-disable-next-line import/no-default-export
 export default Layout;

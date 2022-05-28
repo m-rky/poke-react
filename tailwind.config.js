@@ -1,9 +1,10 @@
 module.exports = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
   theme: {
-    fontFamily: {
-      title: ['Dosis', 'system-ui', 'sans-serif'],
-      body: ['Source Sans Pro', 'system-ui', 'sans-serif'],
-    },
+    extend: {},
   },
   plugins: [],
 };
