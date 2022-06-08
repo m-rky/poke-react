@@ -85,8 +85,9 @@ function PokePage(props) {
                   <stop
                     offset="1"
                     stopColor={
-                      TypeColor[data.types[1].type.name] ||
-                      TypeColor[data.types[0].type.name]
+                      data.types[1]
+                        ? TypeColor[data.types[1].type.name]
+                        : TypeColor[data.types[0].type.name]
                     }
                     stopOpacity="0.8"
                   />
